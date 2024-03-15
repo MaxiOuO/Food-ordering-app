@@ -1,11 +1,12 @@
+import clientPromise from "@/libs/mongoConnect";
+// import { UserInfo } from "@/models/UserInfo";
 import bcrypt from "bcrypt";
-import NextAuth from "next-auth";
 import * as mongoose from "mongoose";
 import { User } from '@/models/User';
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth, { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/libs/mongoConnect";
+import GoogleProvider from "next-auth/providers/google";
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
 
 export const authOptions = {
     secret: process.env.SECRET,
@@ -19,8 +20,8 @@ export const authOptions = {
             name: 'Credentials',
             id: 'credentials',
             credentials: {
-                username: { label: "Email", type: "email", placeholder: "text@email.com" },
-                password: { label: "Password", type: "password" }
+                username: { label: "Email", type: "email", placeholder: "test@example.com" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req) {
                 const email = credentials?.email;
@@ -33,11 +34,25 @@ export const authOptions = {
                 if (passwordOk) {
                     return user;
                 }
+
                 return null
             }
         })
     ],
-}
+};
+
+// export async function isAdmin() {
+//     const session = await getServerSession(authOptions);
+//     const userEmail = session?.user?.email;
+//     if (!userEmail) {
+//         return false;
+//     }
+//     const userInfo = await UserInfo.findOne({ email: userEmail });
+//     if (!userInfo) {
+//         return false;
+//     }
+//     return userInfo.admin;
+// }
 
 const handler = NextAuth(authOptions);
 
