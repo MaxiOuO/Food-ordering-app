@@ -87,7 +87,7 @@ export default function CategoriesPage() {
                 <h2 className="mt-8 text-sm text-gray-500">Edit category:</h2>
                 {categories?.length > 0 && categories.map(c => (
                     <button
-                        className="bg-gray-200 rounded-lg p-2 px-4 flex gap-1 cursor-pointer mb-1"
+                        className="rounded-lg p-2 px-4 flex gap-1 cursor-pointer mb-1"
                         onClick={() => {
                             setEditedCategory(c);
                             setCategoryName(c.name);
