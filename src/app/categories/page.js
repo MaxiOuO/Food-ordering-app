@@ -1,4 +1,5 @@
 'use client';
+import DeleteButton from "@/components/layouts/DeleteButton";
 import UserTabs from "@/components/layouts/UserTabs";
 import { useProfile } from "@/components/UseProfile";
 import { useEffect, useState } from "react";
@@ -58,6 +59,27 @@ export default function CategoriesPage() {
         return 'Not an admin.';
     }
 
+    async function handleDeleteClick(_id) {
+        const promise = new Promise(async (resolve, reject) => {
+            const response = await fetch('/api/categories?_id=' + _id, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                resolve();
+            } else {
+                reject();
+            }
+        });
+
+        await toast.promise(promise, {
+            loading: 'Deleting...',
+            success: 'Deleted',
+            error: 'Error',
+        })
+
+        fetchCategories();
+    }
+
     return (
         <section className="mt-8 max-w-lg mx-auto">
             <UserTabs isAdmin={true} />
@@ -76,24 +98,50 @@ export default function CategoriesPage() {
                             onChange={evt => setCategoryName(evt.target.value)}
                         />
                     </div>
-                    <div className="pb-2 ">
+                    <div className="pb-2 flex gap-2">
                         <button className="border border-primary" type="submit">
                             {editedCategory ? 'Update' : 'Create'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditedCategory(null);
+                                setCategoryName('');
+                            }}>
+                            Cancel
                         </button>
                     </div>
                 </div>
             </form>
             <div>
-                <h2 className="mt-8 text-sm text-gray-500">Edit category:</h2>
+                <h2 className="mt-8 text-sm text-gray-500">
+                    Existing categories:
+                </h2>
                 {categories?.length > 0 && categories.map(c => (
-                    <button
-                        className="rounded-lg p-2 px-4 flex gap-1 cursor-pointer mb-1"
-                        onClick={() => {
-                            setEditedCategory(c);
-                            setCategoryName(c.name);
-                        }}>
-                        <span>{c.name}</span>
-                    </button>
+                    <div
+                        key={c._id}
+                        className="bg-gray-100 rounded-lg p-2 px-4 flex gap-1 mb-1 items-center"
+                    >
+                        <span
+                            className="grow"
+                        >
+                            {c.name}
+                        </span>
+                        <div className="flex gap-1">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditedCategory(c);
+                                    setCategoryName(c.name);
+                                }}>
+                                Edit
+                            </button>
+                            <DeleteButton
+                                label={'Delete'}
+                                onDelete={() => handleDeleteClick(c._id)}
+                            />
+                        </div>
+                    </div>
                 ))}
             </div>
         </section >
