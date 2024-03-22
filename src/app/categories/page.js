@@ -8,8 +8,8 @@ import toast from "react-hot-toast";
 export default function CategoriesPage() {
     const [categoryName, setCategoryName] = useState('');
     const [categories, setCategories] = useState([]);
-    const { loading: profileLoading, data: profileData } = useProfile();
     const [editedCategory, setEditedCategory] = useState(null);
+    const { loading: profileLoading, data: profileData } = useProfile();
 
     useEffect(() => {
         fetchCategories()
@@ -81,7 +81,7 @@ export default function CategoriesPage() {
     }
 
     return (
-        <section className="mt-8 max-w-lg mx-auto">
+        <section className="mt-8 max-w-2xl mx-auto">
             <UserTabs isAdmin={true} />
             <form className="mt-8" onSubmit={handleCategorySubmit}>
                 <div className="flex gap-2 items-end">
