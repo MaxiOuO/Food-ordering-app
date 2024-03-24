@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import UserForm from "@/components/layouts/UserForm";
 import UserTabs from '@/components/layouts/UserTabs';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function ProfilePage() {
 

@@ -7,7 +7,7 @@ import { UserInfo } from "@/models/UserInfo";
 export async function PUT(req) {
     mongoose.connect(process.env.MONGO_URL);
     const data = await req.json();
-    const { _id, name, image, ...otherUserInfo } = data;
+    const { _id, name, ...otherUserInfo } = data;
 
     let filter = {};
     if (_id) {
@@ -19,7 +19,7 @@ export async function PUT(req) {
     }
 
     const user = await User.findOne(filter);
-    await User.updateOne(filter, { name, image });
+    await User.updateOne(filter, { name });
     await UserInfo.findOneAndUpdate({ email: user.email }, otherUserInfo, { upsert: true });
 
     return Response.json(true);

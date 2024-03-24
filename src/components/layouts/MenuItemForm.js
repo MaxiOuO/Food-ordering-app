@@ -17,9 +17,9 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
         fetch('/api/categories').then(res => {
             res.json().then(categories => {
                 setCategories(categories);
-            })
-        })
-    }, [])
+            });
+        });
+    }, []);
 
     return (
         <form
@@ -44,7 +44,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
                     <label>Category</label>
                     <select value={category} onChange={evt => setCategory(evt.target.value)}>
                         {categories?.length > 0 && categories.map(c => (
-                            <option value={c._id}>{c.name}</option>
+                            <option key={c.index} value={c._id}>{c.name}</option>
                         ))}
                     </select>
                     <label>Base price</label>
