@@ -10,6 +10,7 @@ export default function Header() {
     const userData = session.data?.user;
     let userName = userData?.name || userData?.email;
     const { cartProducts } = useContext(CartContext);
+
     if (userName && userName.includes(' ')) {
         userName = userName.split(' ')[0];
     }
