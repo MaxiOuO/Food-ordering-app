@@ -1,6 +1,7 @@
 'use client'
 import { useState } from "react";
 import { useProfile } from "@/components/UseProfile";
+import AddressInputs from "@/components/layouts/AddressInputs";
 
 export default function UserForm({ user, onSave }) {
 
@@ -12,6 +13,14 @@ export default function UserForm({ user, onSave }) {
     const [country, setCountry] = useState(user?.country || '');
     const [admin, setAdmin] = useState(user?.admin || false);
     const { data: loggedInUserData } = useProfile();
+
+    function handleAddressChange(propName, value) {
+        if (propName === 'phone') setPhone(value);
+        if (propName === 'streetAddress') setStreetAddress(value);
+        if (propName === 'postalCode') setPostalCode(value);
+        if (propName === 'city') setCity(value);
+        if (propName === 'country') setCountry(value);
+    }
 
     return (
         <div className="flex gap-4 items-center max-w-2xl mx-auto mt-8">
@@ -30,35 +39,11 @@ export default function UserForm({ user, onSave }) {
                 <input
                     type="email" disabled={true} value={user.email}
                 />
-                <label>Phone</label>
-                <input
-                    type="tel" placeholder="Phone number" value={phone} onChange={evt => setPhone(evt.target.value)}
-                />
-                <label>Street address</label>
-                <input
-                    type="text" placeholder="Street address" value={streetAddress} onChange={evt => setStreetAddress(evt.target.value)}
-                />
-                <div className='grid grid-cols-2 gap-2'>
-                    <div>
-                        <label>Postal code</label>
-                        <input
-                            type="text" placeholder="Postal code" value={postalCode} onChange={evt => setPostalCode(evt.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>City</label>
-                        <input
-                            type="text" placeholder="City" value={city} onChange={evt => setCity(evt.target.value)}
-                        />
-                    </div>
-                </div>
-                <label>Country</label>
-                <input
-                    type="text" placeholder="Country" value={country} onChange={evt => setCountry(evt.target.value)}
-                />
+                <AddressInputs
+                    addressProps={{ phone, streetAddress, postalCode, city, country }}
+                    setAddressProp={handleAddressChange} />
                 {loggedInUserData.admin && (
                     <div>
-                        {JSON.stringify(admin)}
                         <label className="p-2 inline-flex items-center gap-2 mb-2" htmlFor="adminCB">
                             <input id="adminCB" type="checkbox" className=""
                                 value={'1'} checked={admin} onClick={evt => setAdmin(evt.target.checked)}

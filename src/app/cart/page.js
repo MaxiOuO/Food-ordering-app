@@ -1,27 +1,47 @@
 'use client';
-import { CartContext } from "@/components/AppContext";
+import { CartContext, cartProductPrice } from "@/components/AppContext";
 import SectionHeaders from "@/components/layouts/SectionHeaders";
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Trash from "@/components/icons/Trash";
-
+import AddressInputs from "@/components/layouts/AddressInputs";
+import { useProfile } from "@/components/UseProfile";
 
 export default function CartPage() {
 
-    const { cartProducts } = useContext(CartContext);
+    const { cartProducts, removeCartProduct } = useContext(CartContext);
+    const [address, setAddress] = useState({});
+    const { data: profileData } = useProfile();
+
+    useEffect(() => {
+        if (profileData?.city) {
+            const { phone, streetAddress, postalCode, city, country } = profileData;
+            const addressFormProfile = { phone, streetAddress, postalCode, city, country };
+            setAddress(addressFormProfile);
+        }
+    }, [profileData])
+
+    function handleAddressChange(propName, value) {
+        setAddress(prevAddress => ({ ...prevAddress, [propName]: value }));
+    }
+
+    let total = 0;
+    for (const product of cartProducts) {
+        total += cartProductPrice(product);
+    }
 
     return (
         <section className="mt-8">
             <div className="text-center">
                 <SectionHeaders mainHeader={'Cart'} />
             </div>
-            <div className="grid mt-4 gap-4 grid-cols-2">
+            <div className="grid mt-8 gap-8 grid-cols-2">
                 <div>
                     {cartProducts?.length === 0 && (
                         <div>No products in your shopping cart</div>
                     )}
-                    {cartProducts?.length > 0 && cartProducts.map(product => (
-                        <div className="flex items-center gap-4 mb-2 border-b py-2">
+                    {cartProducts?.length > 0 && cartProducts.map((product, index) => (
+                        <div className="flex items-center gap-4 border-b py-4">
                             <div className="w-24">
                                 <Image src={product.image} alt="" width={240} height={240} />
                             </div>
@@ -42,15 +62,36 @@ export default function CartPage() {
                                 )}
                             </div>
                             <div className="text-lg font-semibold">
-                                €12
+                                €{cartProductPrice(product)}
                             </div>
                             <div className="ml-2">
-                                <button className="p-2"><Trash /></button>
+                                <button
+                                    onClick={() => removeCartProduct(index)}
+                                    type="button"
+                                    className="p-2">
+                                    <Trash />
+                                </button>
                             </div>
                         </div>
                     ))}
+                    <div className="py-2 text-right pr-16">
+                        <span className="text-gray-500">
+                            Subtotal:
+                        </span>
+                        <span className="text-lg font-semibold pl-2">
+                            €{total}
+                        </span>
+                    </div>
                 </div>
-                <div>Right</div>
+                <div className="bg-gray-100 p-4 rounded-lg">
+                    <h2>Checkout</h2>
+                    <form>
+                        <AddressInputs
+                            addressProps={address}
+                            setAddressProp={handleAddressChange} />
+                        <button type="submit">Pay €{total}</button>
+                    </form>
+                </div>
             </div>
         </section>
     )
