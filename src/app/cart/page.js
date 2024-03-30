@@ -25,9 +25,9 @@ export default function CartPage() {
         setAddress(prevAddress => ({ ...prevAddress, [propName]: value }));
     }
 
-    let total = 0;
+    let subtotal = 0;
     for (const product of cartProducts) {
-        total += cartProductPrice(product);
+        subtotal += cartProductPrice(product);
     }
 
     return (
@@ -74,13 +74,17 @@ export default function CartPage() {
                             </div>
                         </div>
                     ))}
-                    <div className="py-2 text-right pr-16">
-                        <span className="text-gray-500">
-                            Subtotal:
-                        </span>
-                        <span className="text-lg font-semibold pl-2">
-                            €{total}
-                        </span>
+                    <div className="py-2 flex pr-16 justify-end items-center">
+                        <div className="text-gray-500">
+                            Subtotal:<br />
+                            Delivery:<br />
+                            Total:
+                        </div>
+                        <div className="text-lg font-semibold pl-2 text-right">
+                            €{subtotal}<br />
+                            €5<br />
+                            €{subtotal + 5}
+                        </div>
                     </div>
                 </div>
                 <div className="bg-gray-100 p-4 rounded-lg">
@@ -89,7 +93,7 @@ export default function CartPage() {
                         <AddressInputs
                             addressProps={address}
                             setAddressProp={handleAddressChange} />
-                        <button type="submit">Pay €{total}</button>
+                        <button type="submit">Pay €{subtotal + 5}</button>
                     </form>
                 </div>
             </div>
